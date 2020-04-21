@@ -17,7 +17,6 @@ const renderTeams = () =>
         })
         .then((data) =>
         {
-            console.log(data)
             data.forEach(team => 
             {
              renderCard(team);   
@@ -38,10 +37,12 @@ const renderCard = (team) =>
     name.innerText = `${team.name}`;
 
     let button = document.createElement("button");
-    button.setAttribute("data-trainer-id", `${team.id}`);
+    button.setAttribute("id", `${team.id}`);
     button.innerText = "Add Pokemon";
+    button.addEventListener("click", addPokemon)
 
     let ul = document.createElement("ul");
+    ul.setAttribute("id", `${team.name}`)
 
     team.pokemons.forEach(pokemon =>
         {
@@ -60,9 +61,32 @@ const renderCard = (team) =>
     teamContainer.append(card);
 }
 
-// const renderPokemons = (pokemon) =>
-// {
-//             let li = document.createElement("li");
-//             li.innerText = `${pokemon.nickname} (${pokemon.species})`;
-//             ul.append(li);
-// }
+const renderPokemon = (trainer) =>
+{
+            let ul = [...document.querySelectorAll("button")].find(e => e.id === `${trainer.trainer_id}`).nextSibling
+            let li = document.createElement("li");
+            li.innerText = `${trainer.nickname} (${trainer.species})`;
+            ul.append(li);
+}
+
+
+// add new poke
+
+const addPokemon = (event) =>
+{
+    console.log(event)
+    fetch(POKEMONS_URL, 
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({ 
+            trainer_id: event.target.id
+        })
+    })
+    .then(response => { return response.json()})
+    .then(data => renderPokemon(data))
+}
+
