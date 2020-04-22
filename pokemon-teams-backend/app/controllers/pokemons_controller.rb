@@ -13,4 +13,11 @@ class PokemonsController < ApplicationController
             render json: pokemon
         end
     end
+
+    def destroy
+        pokemon = Pokemon.all.find_by(id: params[:id])
+        trainer = pokemon.trainer
+        pokemon.destroy
+        render :json => { message: "Success", tainer: trainer }
+    end
 end

@@ -53,7 +53,9 @@ const renderCard = (team) =>
             button.setAttribute("class", "release");
             button.setAttribute("data-pokemon-id", `${pokemon.id}`);
             button.innerText = "Release"
-            ul.append(li, button);
+            button.addEventListener("click", deletePokemon)
+            li.append(button);
+            ul.append(li);
         })
 
 
@@ -65,7 +67,14 @@ const renderPokemon = (trainer) =>
 {
             let ul = [...document.querySelectorAll("button")].find(e => e.id === `${trainer.trainer_id}`).nextSibling
             let li = document.createElement("li");
+
+            let button = document.createElement("button");
+            button.setAttribute("class", "release");
+            button.setAttribute("data-pokemon-id", `${trainer.id}`);
+            button.innerText = "Release"
+            button.addEventListener("click", deletePokemon)
             li.innerText = `${trainer.nickname} (${trainer.species})`;
+            li.appendChild(button);
             ul.append(li);
 }
 
@@ -90,3 +99,15 @@ const addPokemon = (event) =>
     .then(data => renderPokemon(data))
 }
 
+// delete pokemon
+const deletePokemon =  (event) => {
+    console.log(event.target.parentNode);
+    console.log(event.target.dataset.pokemonId);
+    fetch(`http://localhost:3000/pokemons/${event.target.dataset.pokemonId}`,
+        {
+            method: "DELETE",
+        })
+        .then(response => response.json())
+        .then(data=> { return data})
+       console.log(data)
+}
